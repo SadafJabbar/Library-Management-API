@@ -9,6 +9,8 @@ A RESTful Library Management API built using **Java and Spring Boot**. The appli
 * Spring Web MVC
 * Spring Data JPA / Hibernate
 * MySQL
+* Spring Cache
+* Caffeine
 * Docker
 * Maven
 * JUnit 5
@@ -27,6 +29,9 @@ A RESTful Library Management API built using **Java and Spring Boot**. The appli
 * Exception handling
 * Request validation
 * MySQL database integration
+* Caffeine caching
+* Cache expiration using TTL
+* Cache eviction on data updates and deletion
 * Aspect-Oriented Programming (AOP)
 * Unit testing
 * Controller testing
@@ -44,6 +49,7 @@ dto
 mapper
 exception
 aspect
+configuration
 integration tests
 ```
 
@@ -60,6 +66,26 @@ spring.datasource.url=jdbc:mysql://localhost:3306/librarydb
 spring.datasource.username=<username>
 spring.datasource.password=<password>
 ```
+
+## Caching
+
+The application uses **Spring Cache with Caffeine** to reduce unnecessary database queries.
+
+Frequently requested resources are cached using `@Cacheable`. Cache entries are removed when the corresponding data is updated or deleted using `@CacheEvict`.
+
+Caching is implemented for:
+
+* Books
+* Users
+* Categories
+* Loans
+
+The Caffeine cache is configured with:
+
+* Automatic expiration using TTL
+* Maximum cache size
+
+This allows repeated requests for the same resource to be served from the cache instead of querying the database every time.
 
 ## Running the Application
 
