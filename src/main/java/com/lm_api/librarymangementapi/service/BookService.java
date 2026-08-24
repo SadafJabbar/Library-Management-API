@@ -11,6 +11,8 @@ import com.lm_api.librarymangementapi.mapper.BookMapper;
 import com.lm_api.librarymangementapi.repository.BookRepository;
 import com.lm_api.librarymangementapi.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class BookService {
     }
 
     @TrackExecution
+    @Cacheable(value = "books", key = "#id")
     public BookResponse getBookById(Long id){
         BookEntity bookEntity=bookRepository.findById(id).orElseThrow(()-> new BookNotFoundException(id));
         return bookMapper.transformToBookResponse(bookEntity);
@@ -94,6 +97,7 @@ public class BookService {
     }
 
 
+    @CacheEvict(value = "books",key = "#id")
     public BookResponse bookUpdation(Long id, BookRequest bookRequest){
         BookEntity existingBook=bookRepository.findById(id).orElseThrow(()->new BookNotFoundException(id));
         CategoryEntity oldCategory=existingBook.getCategory();
@@ -110,6 +114,7 @@ public class BookService {
         return bookMapper.transformToBookResponse(book);
     }
 
+    @CacheEvict(value = "books", key = "#id")
     public BookResponse bookDeletion(Long id) {
         BookEntity book=bookRepository.findById(id).orElseThrow(()-> new BookNotFoundException(id));
         BookResponse bookResponse=bookMapper.transformToBookResponse(book);

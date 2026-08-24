@@ -7,6 +7,7 @@ import com.lm_api.librarymangementapi.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,8 @@ public class BookController {
         this.bookService=bookService;
     }
 
-    @Operation(summary = "Get a book by ID")    @GetMapping("/{id}")
+    @Operation(summary = "Get a book by ID")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<BookResponse> >getById(@PathVariable Long id){
         BookResponse book=bookService.getBookById(id);
         ApiResponse<BookResponse> response= ApiResponse.<BookResponse>builder().

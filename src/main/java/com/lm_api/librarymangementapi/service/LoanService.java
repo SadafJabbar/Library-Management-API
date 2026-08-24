@@ -14,6 +14,8 @@ import com.lm_api.librarymangementapi.repository.BookRepository;
 import com.lm_api.librarymangementapi.repository.LoanRepository;
 import com.lm_api.librarymangementapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,7 @@ public class LoanService {
 
 
     @TrackExecution
+    @Cacheable(value = "loans",key = "#id")
     public LoanResponse getLoanById(Long id){
         LoanEntity loan=loanRepository.findById(id).orElseThrow(()-> new LoanNotFoundException(id));
         return loanMapper.transformToLoanResponse(loan);
@@ -73,6 +76,7 @@ public class LoanService {
      }
 
 
+    @CacheEvict(value = "loans", key = "#id")
     public LoanResponse loanDeletion(Long id){
         LoanEntity loan=loanRepository.findById(id).orElseThrow(()-> new LoanNotFoundException(id));
         Long bookId=loan.getBook().getId();

@@ -9,6 +9,8 @@ import com.lm_api.librarymangementapi.mapper.UserMapper;
 import com.lm_api.librarymangementapi.repository.LoanRepository;
 import com.lm_api.librarymangementapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ public class UserService {
 
 
     @TrackExecution
+    @Cacheable(value = "users",key = "#id")
     public UserResponse getUserById(Long id){
         UserEntity user=userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(id));
         return userMapper.transformToUserResponse(user);
@@ -57,6 +60,7 @@ public class UserService {
         return userMapper.transformToUserResponse(user);
     }
 
+    @CacheEvict(value = "users",key = "#id")
     public UserResponse   userUpdation(Long id,UserRequest userRequest){
         UserEntity user=userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(id));
         user=userMapper.updateUser(user,userRequest);
@@ -64,6 +68,7 @@ public class UserService {
         return userMapper.transformToUserResponse(user);
     }
 
+    @CacheEvict(value = "users", key = "#id")
     public UserResponse userDeletion(Long id){
         UserEntity user=userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(id));
         if(loanRepository.countByUserId(id)>0){

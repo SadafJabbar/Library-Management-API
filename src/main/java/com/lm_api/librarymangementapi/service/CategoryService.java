@@ -7,6 +7,8 @@ import com.lm_api.librarymangementapi.exceptions.CategoryNotFoundException;
 import com.lm_api.librarymangementapi.repository.BookRepository;
 import com.lm_api.librarymangementapi.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class CategoryService {
     }
 
     @TrackExecution
+    @Cacheable(value = "categories",key = "#id")
     public CategoryEntity getCategoryById(Long id){
          CategoryEntity category= categoryRepository.findById(id).orElseThrow(()-> new CategoryNotFoundException(id));
          return category;
@@ -44,6 +47,7 @@ public class CategoryService {
     }
 
 
+    @CacheEvict(value = "categories",key = "#id")
     public CategoryEntity categoryUpdation(Long id,CategoryRequest categoryRequest){
         CategoryEntity category=categoryRepository.findById(id).orElseThrow(()-> new CategoryNotFoundException(id));
         category.setName(categoryRequest.name());
@@ -51,6 +55,7 @@ public class CategoryService {
     }
 
 
+    @CacheEvict(value = "categories", key = "#id")
     public CategoryEntity categoryDeletion(Long id){
         CategoryEntity category=categoryRepository.findById(id).orElseThrow(()-> new CategoryNotFoundException(id));
         if(bookRepository.countByCategoryId(id)>0){
