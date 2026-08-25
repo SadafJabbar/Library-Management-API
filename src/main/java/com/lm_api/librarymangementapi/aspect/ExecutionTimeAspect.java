@@ -1,5 +1,6 @@
 package com.lm_api.librarymangementapi.aspect;
 
+import com.lm_api.librarymangementapi.annotation.TrackExecution;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -11,13 +12,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExecutionTimeAspect {
 
-    @Around("@annotation(com.lm_api.librarymangementapi.annotation.TrackExecution)")
-    public Object aroundMethod(ProceedingJoinPoint joinPoint) throws Throwable{
+    @Around("@annotation(trackExecution)")
+    public Object aroundMethod(ProceedingJoinPoint joinPoint, TrackExecution trackExecution) throws Throwable{
         long startTime=System.currentTimeMillis();
         Object result=joinPoint.proceed();
         long endTime=System.currentTimeMillis();
         long executionTime=endTime-startTime;
-        log.info("Method {} executed in {} ms",joinPoint.getSignature().getName(),executionTime);
+        log.info(" {} executed in {} ms",trackExecution.name(),executionTime);
         return result;
     }
 }

@@ -32,21 +32,21 @@ public class BookService {
         this.categoryRepository=categoryRepository;
     }
 
-    @TrackExecution
+    @TrackExecution(name = "Get book by Id")
     @Cacheable(value = "books", key = "#id")
     public BookResponse getBookById(Long id){
         BookEntity bookEntity=bookRepository.findById(id).orElseThrow(()-> new BookNotFoundException(id));
         return bookMapper.transformToBookResponse(bookEntity);
     }
 
-    @TrackExecution
+    @TrackExecution(name = "Getting All books")
     public Page<BookResponse> getAllBooks(Pageable pageable) {
         return bookRepository.findAll(pageable)
                 .map(bookMapper::transformToBookResponse);
     }
 
 
-    @TrackExecution
+    @TrackExecution(name = "Getting books by Status")
     public List<BookResponse> getBookByStatus(String status){
         List<BookResponse> responses=new ArrayList<>();
         for(BookEntity book:bookRepository.findAllByStatusContainingIgnoreCase(status)){
@@ -56,7 +56,7 @@ public class BookService {
     }
 
 
-    @TrackExecution
+    @TrackExecution(name = "Getting books by Title")
     public List<BookResponse> getBookByTitle(String title){
         List<BookResponse> responses=new ArrayList<>();
         for(BookEntity book:bookRepository.findAllByTitleContainingIgnoreCase(title)){
@@ -65,7 +65,7 @@ public class BookService {
     }
 
 
-    @TrackExecution
+    @TrackExecution(name = "Getting books by Author")
     public List<BookResponse> getBookByAuthor(String author){
         List<BookResponse> responses=new ArrayList<>();
         for(BookEntity book:bookRepository.findAllByAuthorContainingIgnoreCase(author)){
@@ -74,7 +74,7 @@ public class BookService {
     }
 
 
-    @TrackExecution
+    @TrackExecution(name = "Getting book by CategoryId")
     public List<BookResponse> getByCategoryId(Long id){
         List<BookResponse> responses=new ArrayList<>();
         for(BookEntity book:bookRepository.findAllByCategoryId(id)){
@@ -84,6 +84,7 @@ public class BookService {
     }
 
 
+    @TrackExecution(name="Book Creation")
     public BookResponse bookCreation( BookRequest bookRequest){
         CategoryEntity category = categoryRepository.findById(bookRequest.categoryId())
                 .orElseThrow(() -> new CategoryNotFoundException(bookRequest.categoryId()));
@@ -97,6 +98,7 @@ public class BookService {
     }
 
 
+    @TrackExecution(name = "Book Updation")
     @CacheEvict(value = "books",key = "#id")
     public BookResponse bookUpdation(Long id, BookRequest bookRequest){
         BookEntity existingBook=bookRepository.findById(id).orElseThrow(()->new BookNotFoundException(id));
@@ -114,6 +116,7 @@ public class BookService {
         return bookMapper.transformToBookResponse(book);
     }
 
+    @TrackExecution(name = "book Deletion by Id")
     @CacheEvict(value = "books", key = "#id")
     public BookResponse bookDeletion(Long id) {
         BookEntity book=bookRepository.findById(id).orElseThrow(()-> new BookNotFoundException(id));

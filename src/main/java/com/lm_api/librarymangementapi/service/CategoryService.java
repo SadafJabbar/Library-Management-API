@@ -25,7 +25,7 @@ public class CategoryService {
         this.bookRepository=bookRepository;
     }
 
-    @TrackExecution
+    @TrackExecution(name = "Get Category by Id")
     @Cacheable(value = "categories",key = "#id")
     public CategoryEntity getCategoryById(Long id){
          CategoryEntity category= categoryRepository.findById(id).orElseThrow(()-> new CategoryNotFoundException(id));
@@ -33,7 +33,7 @@ public class CategoryService {
             }
 
 
-    @TrackExecution
+    @TrackExecution(name = "Gettin all categories")
     public Page<CategoryEntity> getAllCategories(Pageable pageable){
         return categoryRepository.findAll(pageable);
     }
@@ -47,6 +47,7 @@ public class CategoryService {
     }
 
 
+    @TrackExecution(name = "Category Updation by Id")
     @CacheEvict(value = "categories",key = "#id")
     public CategoryEntity categoryUpdation(Long id,CategoryRequest categoryRequest){
         CategoryEntity category=categoryRepository.findById(id).orElseThrow(()-> new CategoryNotFoundException(id));
@@ -55,6 +56,7 @@ public class CategoryService {
     }
 
 
+    @TrackExecution(name = "Category Deletion  by Id")
     @CacheEvict(value = "categories", key = "#id")
     public CategoryEntity categoryDeletion(Long id){
         CategoryEntity category=categoryRepository.findById(id).orElseThrow(()-> new CategoryNotFoundException(id));

@@ -31,21 +31,21 @@ public class UserService {
     }
 
 
-    @TrackExecution
+    @TrackExecution(name = "Get user by Id")
     @Cacheable(value = "users",key = "#id")
     public UserResponse getUserById(Long id){
         UserEntity user=userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(id));
         return userMapper.transformToUserResponse(user);
     }
 
-    @TrackExecution
+    @TrackExecution(name = "Get All users")
     public Page<UserResponse> getAllUsers(Pageable pageable){
         return   userRepository.findAll(pageable).map(userMapper::transformToUserResponse);
     }
 
 
 
-    @TrackExecution
+    @TrackExecution(name = "Get user by name")
     public List<UserResponse>   getUserByName(String name){
         List<UserResponse> userResponses=new ArrayList<>();
         for(UserEntity user:userRepository.findByNameContainingIgnoreCase(name)) {
@@ -55,11 +55,13 @@ public class UserService {
     }
 
 
+    @TrackExecution(name = "User Creation")
     public UserResponse userCreation(UserRequest userRequest){
         UserEntity user=userRepository.save(userMapper.transformToUserEntity(userRequest));
         return userMapper.transformToUserResponse(user);
     }
 
+    @TrackExecution(name = "User Updation")
     @CacheEvict(value = "users",key = "#id")
     public UserResponse   userUpdation(Long id,UserRequest userRequest){
         UserEntity user=userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(id));
@@ -68,6 +70,7 @@ public class UserService {
         return userMapper.transformToUserResponse(user);
     }
 
+    @TrackExecution(name = "User Deletion by Id")
     @CacheEvict(value = "users", key = "#id")
     public UserResponse userDeletion(Long id){
         UserEntity user=userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(id));

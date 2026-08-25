@@ -36,7 +36,7 @@ public class LoanService {
     }
 
 
-    @TrackExecution
+    @TrackExecution(name = "Get Loan by Id")
     @Cacheable(value = "loans",key = "#id")
     public LoanResponse getLoanById(Long id){
         LoanEntity loan=loanRepository.findById(id).orElseThrow(()-> new LoanNotFoundException(id));
@@ -44,13 +44,14 @@ public class LoanService {
     }
 
 
-    @TrackExecution
+    @TrackExecution(name = "Getting All Loans")
      public Page<LoanResponse> getAllLoans(Pageable pageable){
         return loanRepository.findAll(pageable).map(loanMapper::transformToLoanResponse);
         }
 
 
-     public LoanResponse loanCreation(LoanRequest loanRequest){
+    @TrackExecution(name = "Loan Creation")
+    public LoanResponse loanCreation(LoanRequest loanRequest){
         Long userId=loanRequest.userId();
         Long bookId=loanRequest.bookId();
          UserEntity user=userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException(userId));
@@ -76,6 +77,7 @@ public class LoanService {
      }
 
 
+    @TrackExecution(name = "Loan deletion by Id")
     @CacheEvict(value = "loans", key = "#id")
     public LoanResponse loanDeletion(Long id){
         LoanEntity loan=loanRepository.findById(id).orElseThrow(()-> new LoanNotFoundException(id));
