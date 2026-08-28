@@ -129,7 +129,6 @@ Completed testing includes:
 
 * Controller tests
 * Mapper tests
-* Integration tests
 
 Service-layer unit tests are the remaining tests to be completed.
 
@@ -161,6 +160,20 @@ Spring AOP is used to separate cross-cutting concerns from the main application 
 
 The project includes an `aspect` layer for handling concerns that can be applied across multiple parts of the application.
 
+## Load Testing
+
+Load tests are created using **Apache JMeter**.
+
+### How to Run
+
+1. Open the `.jmx` file from the `load-testing` folder in **Apache JMeter**.
+2. Select the required test:
+   - **Normal Load**
+   - **Load Test**
+   - **Stress Test**
+   - **Spike Test**
+3. Run the test.
+4. View the results using **Summary Report** or **Aggregate Report**.
 ## API Endpoints
 
 Example book endpoints:
