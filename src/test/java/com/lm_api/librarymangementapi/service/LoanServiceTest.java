@@ -10,6 +10,8 @@ import com.lm_api.librarymangementapi.mapper.LoanMapper;
 import com.lm_api.librarymangementapi.repository.BookRepository;
 import com.lm_api.librarymangementapi.repository.LoanRepository;
 import com.lm_api.librarymangementapi.repository.UserRepository;
+
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -17,8 +19,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -53,7 +60,70 @@ class LoanServiceTest {
     @InjectMocks
     private LoanService loanService;
 
+
     @Test
+    public void method_should_return_loanResponseById(){
+        UserEntity user= UserEntity.builder().id(U_ID)
+                .name(NAME).email(EMAIL).membershipStatus(STATUS).build();
+
+        CategoryEntity category= CategoryEntity.builder()
+                .id(C_ID).name(C_NAME).book_count(COUNT).build();
+
+        BookEntity book= BookEntity.builder()
+                .id(B_ID).title(TITLE).stock(STOCK)
+                .author(AUTHOR).status(STATUS_BOOK).
+                publishedYear(YEAR).category(category).build();
+
+        LoanEntity loanEntity=LoanEntity.builder().id(L_ID)
+                .user(user).book(book).build();
+
+        LoanResponse response=LoanResponse.builder().id(L_ID)
+                .UserId(U_ID).bookId(B_ID).build();
+
+        when(loanRepository.findById(L_ID)).thenReturn(Optional.of(loanEntity));
+        when(loanMapper.transformToLoanResponse(any(LoanEntity.class))).thenReturn(response);
+        LoanResponse loanResponse=loanService.getLoanById(L_ID);
+        assertAll(
+                ()-> assertEquals(L_ID,loanResponse.id()),
+                ()-> assertEquals(U_ID,loanResponse.UserId()),
+                ()-> assertEquals(B_ID,loanResponse.bookId())
+        );
+        verify(loanRepository).findById(L_ID);
+        verify(loanMapper).transformToLoanResponse(loanEntity);
+    }
+
+
+
+    @Test
+    public void method_should_return_allLoanResponse(){
+        LoanResponse loanResponse=LoanResponse.builder().id(L_ID)
+                .UserId(U_ID).bookId(B_ID).build();
+        UserEntity user= UserEntity.builder().id(U_ID)
+                .name(NAME).email(EMAIL).membershipStatus(STATUS).build();
+
+        CategoryEntity category= CategoryEntity.builder()
+                .id(C_ID).name(C_NAME).book_count(COUNT).build();
+
+        BookEntity book= BookEntity.builder()
+                .id(B_ID).title(TITLE).stock(STOCK)
+                .author(AUTHOR).status(STATUS_BOOK).
+                publishedYear(YEAR).category(category).build();
+        LoanEntity loanEntity=LoanEntity.builder().id(L_ID)
+                .user(user).book(book).build();
+        Pageable pageable= PageRequest.of(0,10);
+        Page<LoanEntity> loanEntityPage=new PageImpl<>(List.of(loanEntity),pageable,1);
+        when(loanRepository.findAll(pageable)).thenReturn(loanEntityPage);
+        when(loanMapper.transformToLoanResponse(loanEntity)).thenReturn(loanResponse);
+        Page<LoanResponse> loanResponsePage=loanService.getAllLoans(pageable);
+        assertNotNull(loanResponsePage);
+        assertEquals(1,loanResponsePage.getTotalElements());
+        assertEquals(loanResponse,loanResponsePage.getContent().get(0));
+        verify(loanRepository).findAll(pageable);
+        verify(loanMapper).transformToLoanResponse(loanEntity);
+    }
+
+
+        @Test
     public void method_should_return_loanResponse(){
         LoanRequest loanRequest=LoanRequest.builder()
                 .userId(U_ID).bookId(B_ID).build();
@@ -96,5 +166,34 @@ class LoanServiceTest {
         verify(loanRepository).save(loanEntity);
         verify(bookRepository).save(book);
     }
+
+    @Test
+    public void method_should_return_deletedLoanResponse(){
+        UserEntity user= UserEntity.builder().id(U_ID)
+                .name(NAME).email(EMAIL).membershipStatus(STATUS).build();
+
+        CategoryEntity category= CategoryEntity.builder()
+                .id(C_ID).name(C_NAME).book_count(COUNT).build();
+
+        BookEntity book= BookEntity.builder()
+                .id(B_ID).title(TITLE).stock(STOCK)
+                .author(AUTHOR).status(STATUS_BOOK).
+                publishedYear(YEAR).category(category).build();
+
+        LoanEntity loanEntity=LoanEntity.builder().id(L_ID)
+                .user(user).book(book).build();
+
+        LoanResponse loanResponse=LoanResponse.builder().id(L_ID)
+                .UserId(U_ID).bookId(B_ID).build();
+
+        when(loanRepository.findById(L_ID)).thenReturn(Optional.of(loanEntity));
+        when(bookRepository.findById(B_ID)).thenReturn(Optional.of(book));
+        when(loanMapper.transformToLoanResponse(any(LoanEntity.class))).thenReturn(loanResponse);
+        LoanResponse loanResponse1=loanService.loanDeletion(L_ID);
+        verify(loanRepository).findById(L_ID);
+        verify(loanMapper).transformToLoanResponse(loanEntity);
+        verify(loanRepository).deleteById(L_ID);
+    }
+
 
 }

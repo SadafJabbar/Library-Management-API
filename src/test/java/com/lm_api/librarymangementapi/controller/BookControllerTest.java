@@ -1,6 +1,7 @@
 package com.lm_api.librarymangementapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lm_api.librarymangementapi.configuration.CacheConfig;
 import com.lm_api.librarymangementapi.dto.BookRequest;
 import com.lm_api.librarymangementapi.dto.BookResponse;
 import com.lm_api.librarymangementapi.entities.CategoryEntity;
@@ -8,6 +9,7 @@ import com.lm_api.librarymangementapi.service.BookService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BookController.class)
+@Import(CacheConfig.class)
 class BookControllerTest {
 
     public static final String TITLE = "Resolution";

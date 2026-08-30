@@ -1,12 +1,14 @@
 package com.lm_api.librarymangementapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lm_api.librarymangementapi.configuration.CacheConfig;
 import com.lm_api.librarymangementapi.dto.LoanRequest;
 import com.lm_api.librarymangementapi.dto.LoanResponse;
 import com.lm_api.librarymangementapi.service.LoanService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(LoanController.class)
+@Import(CacheConfig.class)
 class LoanControllerTest {
     public static final Long U_ID=8L;
     public static final Long B_ID=4L;

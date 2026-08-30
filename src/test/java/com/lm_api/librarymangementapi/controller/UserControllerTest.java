@@ -1,12 +1,14 @@
 package com.lm_api.librarymangementapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lm_api.librarymangementapi.configuration.CacheConfig;
 import com.lm_api.librarymangementapi.dto.UserRequest;
 import com.lm_api.librarymangementapi.dto.UserResponse;
 import com.lm_api.librarymangementapi.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
+@Import(CacheConfig.class)
 class UserControllerTest {
 
     public static final String NAME="sadaf";

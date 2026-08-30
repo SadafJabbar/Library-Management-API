@@ -20,8 +20,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -106,11 +105,106 @@ class BookServiceTest {
 
     @Test//yet to complete
     public void Test_should_return_bookResponseByStatus(){
+        CategoryEntity categoryEntity= CategoryEntity.builder().id(C_ID)
+                .name(C_NAME).book_count(10L).build();
 
-    }
+        BookEntity bookEntity= BookEntity.builder().
+                id(book_ID).title(TITLE).author(AUTHOR).
+                status(STATUS).publishedYear(YEAR).
+                stock(STOCK).category(categoryEntity).build();
+
+        BookResponse bookResponse= BookResponse.builder().id(book_ID)
+                .title(TITLE).author(AUTHOR).status(STATUS).
+                publishedYear(YEAR).stock(STOCK).category(categoryEntity).build();
+
+        when(bookRepository.findAllByStatusContainingIgnoreCase(STATUS)).thenReturn(List.of(bookEntity));
+        when(bookMapper.transformToBookResponse(bookEntity)).thenReturn(bookResponse);
+        //act
+       List< BookResponse>  actualResponse=bookService.getBookByStatus(STATUS);
+        //verify
+        assertNotNull(actualResponse);
+        assertEquals(bookResponse,actualResponse.get(0));
+    verify(bookRepository).findAllByStatusContainingIgnoreCase(STATUS);
+    verify(bookMapper).transformToBookResponse(bookEntity);}
 
 
-        @Test
+    @Test
+    public void Test_should_return_bookResponseByTitle(){
+        CategoryEntity categoryEntity= CategoryEntity.builder().id(C_ID)
+                .name(C_NAME).book_count(10L).build();
+
+        BookEntity bookEntity= BookEntity.builder().
+                id(book_ID).title(TITLE).author(AUTHOR).
+                status(STATUS).publishedYear(YEAR).
+                stock(STOCK).category(categoryEntity).build();
+
+        BookResponse bookResponse= BookResponse.builder().id(book_ID)
+                .title(TITLE).author(AUTHOR).status(STATUS).
+                publishedYear(YEAR).stock(STOCK).category(categoryEntity).build();
+
+        when(bookRepository.findAllByTitleContainingIgnoreCase(TITLE)).thenReturn(List.of(bookEntity));
+        when(bookMapper.transformToBookResponse(bookEntity)).thenReturn(bookResponse);
+        //act
+        List< BookResponse>  actualResponse=bookService.getBookByTitle(TITLE);
+        //verify
+        assertNotNull(actualResponse);
+        assertEquals(bookResponse,actualResponse.get(0));
+        verify(bookRepository).findAllByTitleContainingIgnoreCase(TITLE);
+        verify(bookMapper).transformToBookResponse(bookEntity);}
+
+
+    @Test
+    public void Test_should_return_bookResponseByAuthor(){
+        CategoryEntity categoryEntity= CategoryEntity.builder().id(C_ID)
+                .name(C_NAME).book_count(10L).build();
+
+        BookEntity bookEntity= BookEntity.builder().
+                id(book_ID).title(TITLE).author(AUTHOR).
+                status(STATUS).publishedYear(YEAR).
+                stock(STOCK).category(categoryEntity).build();
+
+        BookResponse bookResponse= BookResponse.builder().id(book_ID)
+                .title(TITLE).author(AUTHOR).status(STATUS).
+                publishedYear(YEAR).stock(STOCK).category(categoryEntity).build();
+
+        when(bookRepository.findAllByAuthorContainingIgnoreCase(AUTHOR)).thenReturn(List.of(bookEntity));
+        when(bookMapper.transformToBookResponse(bookEntity)).thenReturn(bookResponse);
+        //act
+        List< BookResponse>  actualResponse=bookService.getBookByAuthor(AUTHOR);
+        //verify
+        assertNotNull(actualResponse);
+        assertEquals(bookResponse,actualResponse.get(0));
+        verify(bookRepository).findAllByAuthorContainingIgnoreCase(AUTHOR);
+        verify(bookMapper).transformToBookResponse(bookEntity);}
+
+
+    @Test
+    public void Test_should_return_bookResponseByCategoryId(){
+        CategoryEntity categoryEntity= CategoryEntity.builder().id(C_ID)
+                .name(C_NAME).book_count(10L).build();
+
+        BookEntity bookEntity= BookEntity.builder().
+                id(book_ID).title(TITLE).author(AUTHOR).
+                status(STATUS).publishedYear(YEAR).
+                stock(STOCK).category(categoryEntity).build();
+
+        BookResponse bookResponse= BookResponse.builder().id(book_ID)
+                .title(TITLE).author(AUTHOR).status(STATUS).
+                publishedYear(YEAR).stock(STOCK).category(categoryEntity).build();
+
+        when(bookRepository.findAllByCategoryId(C_ID)).thenReturn(List.of(bookEntity));
+        when(bookMapper.transformToBookResponse(bookEntity)).thenReturn(bookResponse);
+        //act
+        List< BookResponse>  actualResponse=bookService.getByCategoryId(C_ID);
+        //verify
+        assertNotNull(actualResponse);
+        assertEquals(bookResponse,actualResponse.get(0));
+        verify(bookRepository).findAllByCategoryId(C_ID);
+        verify(bookMapper).transformToBookResponse(bookEntity);}
+
+
+
+    @Test
     public void Test_should_return_bookCreationResponse(){
         BookRequest bookRequest=BookRequest.builder().
                 title(TITLE).author(AUTHOR).stock(STOCK).publishedYear(YEAR).categoryId(C_ID).build();
@@ -142,4 +236,98 @@ class BookServiceTest {
                 ()-> assertEquals(STOCK,actualResponse.stock()),
                 ()-> assertEquals(YEAR,actualResponse.publishedYear()));
     }
+
+
+    @Test
+    public void Test_should_return_bookUpdationResponse() {
+        Long OLD_C_ID = 3L;
+        Long NEW_C_ID = 5L;
+        BookRequest bookRequest = BookRequest.builder()
+                .title(TITLE)
+                .author(AUTHOR)
+                .stock(STOCK)
+                .publishedYear(YEAR)
+                .categoryId(NEW_C_ID)
+                .build();
+        CategoryEntity oldCategory = CategoryEntity.builder()
+                .id(OLD_C_ID)
+                .name("Old Category")
+                .book_count(10L)
+                .build();
+        CategoryEntity newCategory = CategoryEntity.builder()
+                .id(NEW_C_ID)
+                .name(C_NAME)
+                .book_count(5L)
+                .build();
+        BookEntity bookEntity = BookEntity.builder()
+                .id(book_ID)
+                .title(TITLE)
+                .author(AUTHOR)
+                .status(STATUS)
+                .publishedYear(YEAR)
+                .stock(STOCK)
+                .category(oldCategory)
+                .build();
+        BookResponse bookResponse = BookResponse.builder()
+                .id(book_ID)
+                .title(TITLE)
+                .author(AUTHOR)
+                .status(STATUS)
+                .publishedYear(YEAR)
+                .stock(STOCK)
+                .category(newCategory)
+                .build();
+        when(bookRepository.findById(book_ID)).thenReturn(Optional.of(bookEntity));
+        when(categoryRepository.findById(NEW_C_ID)).thenReturn(Optional.of(newCategory));
+        when(bookMapper.updateEntity(bookEntity, bookRequest)).thenReturn(bookEntity);
+        when(bookRepository.save(bookEntity)).thenReturn(bookEntity);
+        when(bookRepository.countByCategoryId(NEW_C_ID)).thenReturn(9L);
+        when(bookRepository.countByCategoryId(OLD_C_ID)).thenReturn(9L);
+        when(bookMapper.transformToBookResponse(bookEntity)).thenReturn(bookResponse);
+        BookResponse actualResponse =bookService.bookUpdation(book_ID, bookRequest);
+        assertAll(
+                () -> assertEquals(TITLE, actualResponse.title()),
+                () -> assertEquals(AUTHOR, actualResponse.author()),
+                () -> assertEquals(STOCK, actualResponse.stock()),
+                () -> assertEquals(YEAR, actualResponse.publishedYear())
+        );
+
+        verify(bookRepository).findById(book_ID);
+        verify(categoryRepository).findById(NEW_C_ID);
+        verify(bookMapper).updateEntity(bookEntity, bookRequest);
+        verify(bookRepository).save(bookEntity);
+        verify(bookRepository).countByCategoryId(NEW_C_ID);
+        verify(bookRepository).countByCategoryId(OLD_C_ID);
+        verify(categoryRepository).save(oldCategory);
+        verify(categoryRepository).save(newCategory);
+        verify(bookMapper).transformToBookResponse(bookEntity);
+    }
+
+
+    @Test
+    public void Test_should_return_bookDeletionResponse(){
+       CategoryEntity categoryEntity= CategoryEntity.builder().id(C_ID)
+                .name(C_NAME).book_count(10L).build();
+
+        BookEntity bookEntity= BookEntity.builder().
+                id(book_ID).title(TITLE).author(AUTHOR).
+                status(STATUS).publishedYear(YEAR).
+                stock(STOCK).category(categoryEntity).build();
+
+        BookResponse bookResponse= BookResponse.builder().id(book_ID)
+                .title(TITLE).author(AUTHOR).status(STATUS).
+                publishedYear(YEAR).stock(STOCK).category(categoryEntity).build();
+        when(bookRepository.findById(book_ID)).thenReturn(Optional.of(bookEntity));
+        when(bookMapper.transformToBookResponse(any(BookEntity.class))).thenReturn(bookResponse);
+        when(bookRepository.countByCategoryId(C_ID)).thenReturn(2L);
+        //act
+        BookResponse actualResponse=bookService.bookDeletion(book_ID);
+        verify(bookRepository).findById(book_ID);
+        verify(bookMapper).transformToBookResponse(bookEntity);
+        verify(bookRepository).deleteById(book_ID);
+        verify(bookRepository).countByCategoryId(C_ID);
+        verify(categoryRepository).save(categoryEntity);
+    }
+
+
 }

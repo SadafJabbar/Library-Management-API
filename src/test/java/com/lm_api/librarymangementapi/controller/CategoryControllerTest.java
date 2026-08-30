@@ -1,12 +1,14 @@
 package com.lm_api.librarymangementapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lm_api.librarymangementapi.configuration.CacheConfig;
 import com.lm_api.librarymangementapi.dto.CategoryRequest;
 import com.lm_api.librarymangementapi.entities.CategoryEntity;
 import com.lm_api.librarymangementapi.service.CategoryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CategoryController.class)
+@Import(CacheConfig.class)
 class CategoryControllerTest {
     public static final String NAME="Programming";
     public static final Long C_Id=4L;

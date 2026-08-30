@@ -9,7 +9,7 @@ CREATE TABLE user_entity (
                              id BIGINT NOT NULL AUTO_INCREMENT,
                              name VARCHAR(255),
                              email VARCHAR(255),
-                             created_at DATETIME(6),
+                             created_at TIMESTAMP(6),
                              membership_status VARCHAR(255),
                              PRIMARY KEY (id)
 );
