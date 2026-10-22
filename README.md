@@ -65,8 +65,40 @@ Example:
 spring.datasource.url=jdbc:mysql://localhost:3306/librarydb
 spring.datasource.username=<username>
 spring.datasource.password=<password>
-```
 
+```
+## Features
+
+- CRUD operations for books, categories, users, and loans
+- DTO pattern and object mapping
+- Centralized exception handling and request validation
+- MySQL database integration
+- Database schema migrations using Flyway
+- Caffeine caching with TTL and cache eviction
+- Aspect-Oriented Programming (AOP)
+- Unit, controller, and integration testing
+- Code coverage with JaCoCo
+- Load testing using Apache JMeter
+- JWT-based authentication using Spring Security
+- Access and refresh token management
+- Token validation, expiration, and revocation
+- Role-based authorization for administrators and members
+- Protected endpoints and user-specific access control
+
+## Authentication and Authorization (In Progress)
+
+JWT-based authentication and authorization are being implemented using Spring Security.
+
+Current work includes:
+
+- User login and JWT access token generation
+- Refresh token management and access token renewal
+- Token validation and expiration handling
+- Logout with access and refresh token revocation
+- Role-based access control for administrators and members
+- Securing API endpoints based on authentication and authorization rules
+
+This section will be updated as additional security features and tests are completed.
 ## Caching
 
 The application uses **Spring Cache with Caffeine** to reduce unnecessary database queries.
