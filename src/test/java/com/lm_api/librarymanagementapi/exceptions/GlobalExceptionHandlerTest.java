@@ -17,7 +17,9 @@ import static org.mockito.Mockito.when;
 
 class GlobalExceptionHandlerTest {
 
-    private final GlobalExceptionHandler globalExceptionHandler=new GlobalExceptionHandler();
+    private final GlobalExceptionHandler globalExceptionHandler =
+            new GlobalExceptionHandler(new ExceptionResponse());
+
     @Test
     public void should_return_book_404(){
         BookNotFoundException bookNotFoundException=new BookNotFoundException(10L);
@@ -28,7 +30,7 @@ class GlobalExceptionHandlerTest {
         Map<String,Object> map=response.getBody();
         assertNotNull(map);
         assertEquals(bookNotFoundException.getMessage(),map.get("message"));
-        assertEquals("uri=/api/v1/books/10", response.getBody().get("path"));
+        assertEquals("/api/v1/books/10", response.getBody().get("path"));
         assertNotNull(map.get("timestamp"));
 
     }
